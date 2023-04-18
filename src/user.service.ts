@@ -54,7 +54,6 @@ export class UserService {
     });
   }
 
-  //findOne
   async findOne(email: string): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: { email },

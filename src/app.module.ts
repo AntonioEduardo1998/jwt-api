@@ -9,6 +9,8 @@ import { LocalAuthGuard } from './auth/local-auth.guard';
 import { LocalStrategy } from './auth/local.strategy';
 import { PrismaService } from './prisma.service';
 import { UserService } from './user.service';
+import { DepositService } from './deposit.service';
+import { ProductService } from './product.service';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { UserService } from './user.service';
   providers: [
     AppService,
     UserService,
+    DepositService,
+    ProductService,
     PrismaService,
     AuthService,
     LocalStrategy,
