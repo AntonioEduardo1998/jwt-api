@@ -88,4 +88,11 @@ export class DepositController {
 
     return deposit;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('stock/:productId')
+  async calculateStock(@Param('productId') productId: number) {
+    const stock = await this.depositService.calculateStock(Number(productId));
+    return stock;
+  }
 }

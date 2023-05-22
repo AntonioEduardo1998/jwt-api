@@ -17,18 +17,11 @@ export class DepositService {
   async findDepositById(id: number): Promise<Deposit | null> {
     return this.prisma.deposit.findUnique({
       where: { id },
-      include: {
-        products: true,
-      },
     });
   }
 
   async deposits(): Promise<Deposit[]> {
-    return this.prisma.deposit.findMany({
-      include: {
-        products: true,
-      },
-    });
+    return this.prisma.deposit.findMany();
   }
 
   async createDeposit(data: Prisma.DepositCreateInput): Promise<Deposit> {
@@ -72,16 +65,44 @@ export class DepositService {
   async removeProductFromDeposit(params: {
     depositId: number;
     productId: number;
-  }): Promise<Deposit> {
+  }): Promise<any> {
     const { depositId, productId } = params;
 
-    return this.prisma.deposit.update({
-      where: { id: depositId },
-      data: {
-        products: {
-          delete: { id: productId },
-        },
+    return this.prisma.productMovement.deleteMany({
+      where: {
+        depositId,
+        productId,
       },
     });
+  }
+
+  async calculateStock(productId: number): Promise<{ stock: number }> {
+    const inputMovements = await this.prisma.productMovement.findMany({
+      where: {
+        productId,
+        type: 'input',
+      },
+    });
+
+    const outputMovements = await this.prisma.productMovement.findMany({
+      where: {
+        productId,
+        type: 'output',
+      },
+    });
+
+    const totalInputQuantity = inputMovements.reduce(
+      (total, movement) => total + movement.quantity,
+      0,
+    );
+
+    const totalOutputQuantity = outputMovements.reduce(
+      (total, movement) => total + movement.quantity,
+      0,
+    );
+
+    const stock = totalInputQuantity - totalOutputQuantity;
+
+    return { stock };
   }
 }
