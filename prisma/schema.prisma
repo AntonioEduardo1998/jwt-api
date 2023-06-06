@@ -42,3 +42,22 @@ model ProductMovement {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+model PayableTitle {
+  id              Int               @id @default(autoincrement())
+  dueDate         DateTime
+  originalAmount  Float
+  situation       String
+  openAmount      Float
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  PaymentMovement PaymentMovement[]
+}
+
+model PaymentMovement {
+  id             Int          @id @default(autoincrement())
+  date           DateTime
+  movementType   String
+  payableTitle   PayableTitle @relation(fields: [payableTitleId], references: [id])
+  payableTitleId Int
+}

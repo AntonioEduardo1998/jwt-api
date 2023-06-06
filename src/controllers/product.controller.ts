@@ -49,4 +49,54 @@ export class ProductController {
       averageSalePrice: averageSalePrice || 0,
     };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('product/buy/:productId')
+  async buyProduct(
+    @Param('productId') productId: number,
+    @Body()
+    depositData: {
+      quantity: number;
+      price: number;
+      typeDescription: string;
+      document: string;
+      depositId: number;
+    },
+  ) {
+    const deposit = await this.productService.buyProduct({
+      productId: Number(productId),
+      ...depositData,
+    });
+
+    if (!deposit) {
+      return { message: 'Deposit not found' };
+    }
+
+    return deposit;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('product/sell/:productId')
+  async sellProduct(
+    @Param('productId') productId: number,
+    @Body()
+    depositData: {
+      quantity: number;
+      price: number;
+      typeDescription: string;
+      document: string;
+      depositId: number;
+    },
+  ) {
+    const deposit = await this.productService.sellProduct({
+      productId: Number(productId),
+      ...depositData,
+    });
+
+    if (!deposit) {
+      return { message: 'Deposit not found' };
+    }
+
+    return deposit;
+  }
 }

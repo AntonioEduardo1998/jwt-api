@@ -30,52 +30,6 @@ export class DepositService {
     });
   }
 
-  async insertProductInDeposit(params: {
-    depositId: number;
-    productId: number;
-    quantity: number;
-    price: number;
-    type: 'input' | 'output';
-    typeDescription: string;
-    document: string;
-  }): Promise<ProductMovement> {
-    const {
-      depositId,
-      productId,
-      quantity,
-      price,
-      type,
-      typeDescription,
-      document,
-    } = params;
-
-    return this.prisma.productMovement.create({
-      data: {
-        deposit: { connect: { id: depositId } },
-        product: { connect: { id: productId } },
-        quantity,
-        price,
-        type,
-        typeDescription,
-        document,
-      },
-    });
-  }
-
-  async removeProductFromDeposit(params: {
-    depositId: number;
-    productId: number;
-  }): Promise<any> {
-    const { depositId, productId } = params;
-
-    return this.prisma.productMovement.deleteMany({
-      where: {
-        depositId,
-        productId,
-      },
-    });
-  }
-
   async calculateStock(productId: number): Promise<{ stock: number }> {
     const inputMovements = await this.prisma.productMovement.findMany({
       where: {

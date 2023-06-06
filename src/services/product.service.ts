@@ -21,4 +21,52 @@ export class ProductService {
       where: { productId },
     });
   }
+
+  async buyProduct(params: {
+    depositId: number;
+    productId: number;
+    quantity: number;
+    price: number;
+    typeDescription: string;
+    document: string;
+  }): Promise<ProductMovement> {
+    const { depositId, productId, quantity, price, typeDescription, document } =
+      params;
+
+    return this.prisma.productMovement.create({
+      data: {
+        deposit: { connect: { id: depositId } },
+        product: { connect: { id: productId } },
+        quantity,
+        price,
+        type: 'input',
+        typeDescription,
+        document,
+      },
+    });
+  }
+
+  async sellProduct(params: {
+    depositId: number;
+    productId: number;
+    quantity: number;
+    price: number;
+    typeDescription: string;
+    document: string;
+  }): Promise<ProductMovement> {
+    const { depositId, productId, quantity, price, typeDescription, document } =
+      params;
+
+    return this.prisma.productMovement.create({
+      data: {
+        deposit: { connect: { id: depositId } },
+        product: { connect: { id: productId } },
+        quantity,
+        price,
+        type: 'output',
+        typeDescription,
+        document,
+      },
+    });
+  }
 }
