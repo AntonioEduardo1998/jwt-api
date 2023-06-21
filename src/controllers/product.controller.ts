@@ -99,4 +99,32 @@ export class ProductController {
 
     return deposit;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('payable-titles')
+  async findAllPayableTitles() {
+    const payableTitles = await this.productService.listPayableTitles();
+    return payableTitles;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('payable-title/liquidate/:payableTitleId')
+  async liquidatePayableTitle(
+    @Param('payableTitleId') payableTitleId: number,
+    @Body()
+    depositData: {
+      value: number;
+    },
+  ) {
+    const result = await this.productService.liquidatePayableTitle(
+      Number(payableTitleId),
+      depositData.value,
+    );
+
+    if (!result) {
+      return { message: 'Payable title not found' };
+    }
+
+    return result;
+  }
 }
